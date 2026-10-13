@@ -1,0 +1,314 @@
+================================================================================
+                     DRAINMIND v2.0 — USER GUIDE & SYSTEM MANUAL
+       Computer Vision-Based Drainage Blockage & Waterlogging Risk Intelligence
+================================================================================
+
+TABLE OF CONTENTS
+--------------------------------------------------------------------------------
+ 1. System Overview & Architecture
+ 2. Quick Start & Execution
+ 3. Resolution of Recent Updates & Performance Upgrades
+ 4. Comprehensive Workspace & Tab Guide
+    4.1 Overview Dashboard (Command Center)
+    4.2 Image Inspection (Photo Assessment)
+    4.3 Video Analysis (Continuous CCTV & Crawler Survey)
+    4.4 Inspection History & Audit Log
+    4.5 Location Comparison & Change Intelligence
+    4.6 Executive Reports & Data Dossiers
+    4.7 Settings, Live Simulator & Diagnostics
+ 5. Computer Vision & Risk Scoring Formulas
+ 6. Local SQLite Database & Storage Layout
+ 7. Troubleshooting & FAQ
+--------------------------------------------------------------------------------
+
+
+================================================================================
+1. SYSTEM OVERVIEW & ARCHITECTURE
+================================================================================
+DrainMind v2.0 is a full-stack, local computer vision web application engineered
+for municipal storm-water infrastructure management, drainage obstruction
+detection, and urban flood risk prevention.
+
+KEY ARCHITECTURAL HIGHLIGHTS:
+- Drain Vision Intelligence Ensemble: Fuses deep-learning object detection
+  (Ultralytics YOLOv8) with multi-cue computer vision algorithms (LAB/HSV color
+  clustering, texture entropy, and edge geometry) to detect silt mounds,
+  floating garbage, standing water pools, and structural concrete cracks.
+- Stateful Persistence Architecture: Inspection outcomes and video keyframes
+  survive web application reruns and commit directly into a local SQLite
+  database with foreign-key referential integrity.
+- Real-Time Command Center: Instant synchronization between field captures,
+  dashboard KPI metrics, deterioration trend alarms, and audit logs.
+- Automated Maintenance Dispatch: Generates municipal work orders and printable
+  PDF/CSV dossiers with a single click.
+
+
+================================================================================
+2. QUICK START & EXECUTION
+================================================================================
+PREREQUISITES:
+- Operating System: Windows 10/11, macOS, or Linux.
+- Python: Version 3.10+ (tested and verified on Python 3.12 / 3.13).
+- Dependencies: Streamlit, OpenCV, Ultralytics, FPDF2, Plotly, Pandas.
+
+LAUNCH INSTRUCTIONS:
+1. Open PowerShell or Command Prompt.
+2. Navigate to the DrainMind repository root:
+     cd D:\DrainMind
+3. Launch the application server:
+     python -m streamlit run app.py --server.port 8501
+4. Open your browser and navigate to:
+     http://localhost:8501
+
+RUNNING THE AUTOMATED TEST SUITE:
+To verify all 43 automated unit and integration tests across vision, database,
+and scoring modules:
+     python -m pytest tests/ -v
+
+
+================================================================================
+3. RESOLUTION OF RECENT UPDATES & PERFORMANCE UPGRADES
+================================================================================
+In response to real-world field inspection requirements, the system has undergone
+the following architectural enhancements:
+
+1. HOMEPAGE COMMAND CENTER & REAL-TIME REFRESH:
+   - Modernized UI with glassmorphic cards, colored gradient accents, and live
+     status telemetry badges.
+   - Fixed count queries so all inspection submissions and monitored catchments
+     update immediately without lag.
+   - Built-in "⚡ Reset / Populate Demo Data" tool to preload realistic field records
+     across 5 urban drainage assets.
+
+2. ENHANCED IMAGE INSPECTION ACCURACY:
+   - Replaced generic COCO bounding-box approximations with a high-accuracy
+     multi-cue drain vision engine (`src/vision/segmenter.py`).
+   - Specifically detects:
+     * Earthy silt & sludge deposits (LAB/HSV brown/organic tone segmentation).
+     * Plastic waste & floatable urban debris (texture gradient clustering).
+     * Stagnant waterpooling (specular reflection & dark absorption heuristics).
+     * Structural cracks (high-aspect-ratio edge contour filters).
+   - Dynamic confidence slider now directly controls model detection sensitivity.
+   - Persistent "💾 Save Inspection to Database" button commits records cleanly.
+
+3. HIGH-ACCURACY VIDEO ANALYSIS:
+   - Video processing now executes full multi-cue segmentation and object
+     detection on every sampled frame.
+   - Computes granular temporal progression charts showing blockage % over time.
+   - Automatically extracts and displays critical keyframes:
+     * Peak Blockage Keyframe
+     * Peak Water Stagnation Keyframe
+     * Key Annotated Frame with detected defect bounding boxes.
+   - Includes a 60-frame simulated drain crawler video generator for instant testing.
+
+4. REFINED INSPECTION HISTORY:
+   - Added instant keyword search across drain names, inspector notes, and IDs.
+   - Filter by location, source type (photo vs. video), and sorting order.
+   - Deep-dive inspector drawer displaying side-by-side artifact images,
+     exact bounding box coordinates, and metadata.
+   - Batch CSV export with a single click.
+
+5. ACTIONABLE LOCATION COMPARISON & CHANGE INTELLIGENCE:
+   - Interactive before-and-after longitudinal comparison.
+   - Visual Thermal Change Heatmap (color-coded difference map highlighting
+     newly accumulated silt in red and cleared sections in green).
+   - Delta metrics tracking net change in blockage %, water level, and risk score.
+   - Automated Municipal Work Order Generator with downloadable text dispatch slips.
+   - Demonstration Case Studies (Monsoon Flash Flood vs. Post-Cleaning Maintenance).
+
+6. BULLETPROOF EXECUTIVE REPORTS:
+   - Resolved Latin-1 character formatting issues in PDF generation.
+   - One-click Executive PDF Dossier download with executive summary, tables,
+     and methodology notes.
+   - One-click Raw CSV audit export.
+   - Telemetry overview with mean/peak priority scores and coverage metrics.
+
+7. SETTINGS SYNCHRONIZATION & LIVE SIMULATOR:
+   - Fixed configuration persistence and global singleton detector reload.
+   - Interactive "Live Formula Simulator" allows tuning Debris, Water, and
+     Trend weights with instant mathematical visual feedback.
+   - Live hardware inference benchmark displaying millisecond latency.
+
+
+================================================================================
+4. COMPREHENSIVE WORKSPACE & TAB GUIDE
+================================================================================
+
+4.1 OVERVIEW DASHBOARD (`app.py`)
+--------------------------------------------------------------------------------
+The central situational awareness cockpit.
+- KPI CARDS:
+  * Total Inspections: Live count of all committed inspections.
+  * Locations Monitored: Count of unique urban drainage catchments.
+  * Critical / High Priority: Number of assets with risk scores >= 50.
+  * Worsening Trends: Assets exhibiting worsening debris accumulation.
+- INTERACTIVE CHARTS:
+  * 30-Day Inspection Volume Bar Chart.
+  * Risk Severity Distribution Donut Chart.
+- USER ONBOARDING TOUR:
+  * Automatic welcome dialog pop-up on first login/launch.
+  * Multi-tab guided walkthrough: "What is DrainMind", "Tabs & Workspaces Map",
+    and "Quick Start in 60 seconds".
+  * Can be reopened anytime via the "❓ Onboarding Tour & Guide" button.
+- DEMO CONTROLS:
+  * "⚡ Reset / Populate Demo Data" button to seed 8 field inspections.
+  * "🔄 Reset Tour" button to re-trigger the onboarding pop-up on demand.
+
+4.2 IMAGE INSPECTION (`pages/1_Image_Inspection.py`)
+--------------------------------------------------------------------------------
+Photo-based drain analysis for smartphones, cameras, and drones.
+- INPUT SOURCES:
+  * File Upload: JPEG, PNG, or WebP images up to 20 MB.
+  * Live Webcam Capture: Direct device camera snapshot.
+  * Test Sample Image: Choose between Heavy Silt (Critical), Partial Obstruction
+    (High), or Clear Flow (Normal).
+- VISION PARAMETERS:
+  * Detection Confidence slider (0.05 to 0.90).
+  * Assign to existing location or register a new location code/name.
+- RESULTS & TELEMETRY:
+  * Composite Priority Score with colored severity pill.
+  * Blockage & Silt Coverage % inside Region of Interest.
+  * Standing Water Level indicator %.
+  * Identified Defects Table (class name, confidence %, bounding box coordinates).
+  * Annotated image download and direct database save.
+
+4.3 VIDEO ANALYSIS (`pages/2_Video_Analysis.py`)
+--------------------------------------------------------------------------------
+Continuous inspection for CCTV, pipe crawlers, and drone surveys.
+- INPUT OPTIONS:
+  * Video Upload: MP4, MOV, or AVI video up to 200 MB.
+  * Generate Simulated Drain Crawler Video: Synthesizes a 60-frame drain crawler feed.
+- ANALYSIS CONTROLS:
+  * Frame Sample Interval slider (process every Nth frame).
+  * Detection Sensitivity slider.
+- MULTI-FRAME ANALYTICS:
+  * Temporal Blockage & Water Progression Chart.
+  * Extracted Critical Keyframes Gallery (Peak Blockage & Annotated Defect Frame).
+  * Detected Obstruction Frequencies breakdown table.
+  * Summary metrics: Mean Blockage %, Peak Blockage %, Risk Score.
+  * "Save Video Inspection to Database" button.
+
+4.4 INSPECTION HISTORY (`pages/3_Inspection_History.py`)
+--------------------------------------------------------------------------------
+Historical repository and audit trail.
+- TOOLBAR:
+  * Search bar for quick text filtering.
+  * Location dropdown filter.
+  * Source Type filter (Photo vs Video).
+  * Sort by Newest, Oldest, Highest Risk, or Lowest Risk.
+- INSPECTION DEEP DIVE:
+  * Click any inspection to view original photo, annotated overlay, and keyframes.
+  * Complete score calculation component breakdown.
+  * Deletion tool with safety confirmation checkbox.
+  * Batch CSV export.
+
+4.5 LOCATION COMPARISON (`pages/4_Location_Comparison.py`)
+--------------------------------------------------------------------------------
+Longitudinal audit tool evaluating changes over time.
+- COMPARISON MODES:
+  * Live Monitored Location Audit: Compare two distinct historical records.
+  * Demonstration Case Studies: Instant pre-configured before/after scenarios.
+- VISUAL CHANGE MAP:
+  * Side-by-side baseline and follow-up view.
+  * Thermal Change Heatmap (color-coded pixel difference map).
+- AUTOMATED WORK ORDER:
+  * Computes delta coverage %, delta water level, and delta priority score.
+  * Automatically issues maintenance dispatch recommendations.
+  * Downloadable work order text notice.
+
+4.6 REPORTS & ANALYTICS (`pages/5_Reports.py`)
+--------------------------------------------------------------------------------
+Official compliance reports and data dossiers.
+- FILTERS:
+  * Filter by Location, Completion Status, and Date Range.
+- EXPORT BUTTONS:
+  * "⬇ Download CSV Data Table": Raw tabular data for spreadsheet/GIS tools.
+  * "⬇ Download Executive PDF Dossier": Printable multi-page PDF including
+    executive telemetry, tables, and methodology notes.
+  * Summary statistics preview (Total inspections, average/max priority scores).
+
+4.7 SETTINGS & DIAGNOSTICS (`pages/6_Settings.py`)
+--------------------------------------------------------------------------------
+System tuning, weights calibration, and health diagnostics.
+- TAB 1: MODEL & FORMULA SETTINGS:
+  * Select custom model weights path or YOLO preset (yolov8n, yolov8s, yolov8m).
+  * Adjust Priority Score Weights: Debris Weight (W_D), Water Weight (W_W),
+    Trend Weight (W_T).
+  * Save & Synchronize button updates configuration globally across all pages.
+- TAB 2: LIVE FORMULA SIMULATOR:
+  * Interactive sliders to test how custom weights compute priority scores in
+    real-time under varying conditions.
+- TAB 3: SYSTEM HEALTH DIAGNOSTICS:
+  * SQLite WAL connection health check and file size monitor.
+  * Live Diagnostic Benchmark button measuring vision inference latency in ms.
+
+
+================================================================================
+5. COMPUTER VISION & RISK SCORING FORMULAS
+================================================================================
+PRIORITY SCORE EQUATION:
+The composite Priority Risk Score (0 to 100) is calculated as:
+
+   Risk Score = (W_D * Debris_Coverage_Pct)
+              + (W_W * Water_Level_Pct)
+              + (W_T * Trend_Delta_Pct)
+
+Where:
+- Debris_Coverage_Pct: Percentage of the central channel ROI blocked by silt,
+  sediment, or debris (0 to 100%).
+- Water_Level_Pct: Percentage of ROI indicating stagnant water or flooding (0 to 100%).
+- Trend_Delta_Pct: Increase in blockage compared to previous inspection (0 to 100%).
+- W_D, W_W, W_T: Configured weights (Defaults: 0.50, 0.30, 0.20, normalized to 1.0).
+
+SEVERITY THRESHOLDS:
+- 0.0  to 29.9  --> [ LOWER PRIORITY ]       Normal flow; standard maintenance.
+- 30.0 to 49.9  --> [ MONITOR ]              Moderate silt buildup; monitor closely.
+- 50.0 to 69.9  --> [ INSPECTION RECOMMENDED] Significant blockage; dispatch crew.
+- 70.0 to 100.0 --> [ HIGH PRIORITY ]        Severe obstruction; emergency clearing!
+
+
+================================================================================
+6. LOCAL SQLITE DATABASE & STORAGE LAYOUT
+================================================================================
+All data is stored locally on disk without third-party cloud dependencies:
+- Database File: `D:\DrainMind\data\drainmind.db`
+- Annotated Images: `D:\DrainMind\outputs\annotated\`
+- Raw Images: `D:\DrainMind\data\raw\`
+- Reports Output: `D:\DrainMind\outputs\reports\`
+- User Settings: `D:\DrainMind\configs\user_settings.yaml`
+
+DATABASE TABLES:
+1. `locations`: Registered drain catchments, codes, and landmarks.
+2. `inspections`: Individual inspection sessions, timestamps, and model backend info.
+3. `observations`: Calculated metrics (coverage %, water %, priority score, category).
+4. `detections`: Individual defect bounding boxes (class, confidence, x1, y1, x2, y2).
+5. `artifacts`: Filepaths to saved annotated images, raw inputs, and video keyframes.
+
+
+================================================================================
+7. TROUBLESHOOTING & FAQ
+================================================================================
+
+Q1: Why was the dashboard empty when I first opened it?
+A: A fresh database starts with 0 inspections. You can either perform your first
+   inspection in Tab 1/2 or click "⚡ Reset / Populate Demo Data" in the sidebar
+   or on the Overview page to load 8 sample field inspections immediately.
+
+Q2: How do I test the application if I don't have a drain image or video?
+A: Both inspection workspaces include built-in test generators:
+   - In Image Inspection: Select "🖼 Test Sample Image" and choose a scenario.
+   - In Video Analysis: Go to "🎬 Generate Test Drain Video" and click
+     "Generate Simulated Drain Crawler Video".
+
+Q3: How do I use my own fine-tuned YOLO model?
+A: Place your trained `.pt` weights file in the `models/` folder, open Tab 6
+   (Settings), enter the path in "Custom Model Weights Path", and click
+   "Save & Synchronize Settings".
+
+Q4: What if port 8501 is already running?
+A: You can start the server on an alternate port:
+   python -m streamlit run app.py --server.port 8502
+
+================================================================================
+            DrainMind v2.0 — Municipal Drainage Intelligence System
+================================================================================

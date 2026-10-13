@@ -1,0 +1,41 @@
+app:
+  name: DrainMind
+  version: "1.0.0"
+  description: "Computer Vision-Based Drainage Blockage and Waterlogging Risk Intelligence System"
+
+model:
+  path: ""
+  name: "yolov8n"
+  confidence_threshold: 0.35
+  iou_threshold: 0.45
+  input_size: 640
+  device: "cpu"
+
+video:
+  frame_sample_interval: 10
+  processing_resolution: [640, 480]
+  max_upload_size_mb: 200
+
+image:
+  max_upload_size_mb: 20
+
+database:
+  path: "data/drainmind.db"
+
+output:
+  annotated_dir: "outputs/annotated"
+  reports_dir: "outputs/reports"
+
+scoring:
+  weights:
+    debris: 0.50
+    water: 0.30
+    trend: 0.20
+  thresholds:
+    lower_priority: 25
+    monitor: 50
+    inspection_recommended: 75
+
+logging:
+  level: "INFO"
+  file: "data/drainmind.log"

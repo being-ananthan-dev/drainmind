@@ -1,0 +1,298 @@
+================================================================================
+DRAINMIND — DRAINAGE RISK INTELLIGENCE & COMPUTER VISION SPECIFICATION
+Municipal Computer Vision, Automated Defect Detection & Telemetry System
+================================================================================
+Document Version  : 2.0 (Production Architecture)
+Target Audience   : Municipal Engineers, Software Architects, ML Engineers, Civics
+Operating System  : Windows / Linux / macOS (Cross-Platform)
+Execution Mode    : Local-First / Edge Capable / 100% Offline Operational
+================================================================================
+
+
+TABLE OF CONTENTS
+--------------------------------------------------------------------------------
+1. PROJECT NAME AND PROJECT OVERVIEW
+2. METHODOLOGY
+3. TOOLS AND TECHNOLOGY USED
+4. FEASIBILITY ANALYSIS (TECHNICAL, ECONOMIC, OPERATIONAL, LEGAL)
+5. SYSTEM ARCHITECTURE
+6. WORKFLOW & OPERATIONAL PIPELINE
+================================================================================
+
+
+1. PROJECT NAME AND PROJECT OVERVIEW
+--------------------------------------------------------------------------------
+Project Name: 
+  DrainMind — Drainage Risk Intelligence & Municipal Computer Vision System
+
+Project Overview:
+  Urban stormwater drainage and subsurface culvert networks represent critical 
+  civil infrastructure. However, traditional municipal drainage maintenance is 
+  almost entirely reactive, hazardous, labor-intensive, and unquantified. Field 
+  inspectors must manually peer into dark subterranean pipes, crawl inside 
+  toxic channels, or review hours of grainy CCTV crawler video feeds without 
+  objective numerical telemetry. Consequently, heavy silt accumulation, plastic 
+  waste clogs, structural wall fractures, and stagnant water pools frequently go 
+  undetected until catastrophic flash floods submerge city streets or road 
+  collapse sinkholes occur.
+
+  DrainMind resolves this crisis by providing a complete, production-grade, 
+  locally runnable computer vision web platform. It transforms raw photos and 
+  continuous video feeds from mobile devices, CCTV pipe crawlers, and aerial 
+  drones into actionable civil engineering telemetry. 
+
+Key Objectives of DrainMind:
+  1. Automated Defect Recognition: Rapidly detects and classifies critical 
+     drainage anomalies including plastic waste, organic debris, structural 
+     wall cracks, and stagnant water bodies using deep learning.
+  2. Mathematical Flow Coverage Estimation: Uses computer vision semantic 
+     segmentation and central region-of-interest (ROI) perspective filtering to 
+     accurately calculate percentage silt coverage (0-100%) and standing water.
+  3. Explainable Risk Scoring: Generates a deterministic Priority Risk Score 
+     (0 to 100) based on weighted multi-factor formulas (Debris %, Water %, and 
+     Historical Deterioration Trend Delta), mapping directly to actionable 
+     urgency tiers (Normal Flow, Monitor, Inspection Recommended, High Priority).
+  4. Longitudinal Audit & Change Intelligence: Performs comparative audits 
+     between historical baselines and follow-up inspections, generating thermal 
+     difference heatmaps and automated municipal maintenance dispatch work orders.
+  5. Local Governance & Auditing: Retains all telemetry, bounding boxes, and 
+     visual artifacts in a local SQLite database, generating instant machine-
+     readable CSV logs and printable executive PDF compliance dossiers.
+
+
+2. METHODOLOGY
+--------------------------------------------------------------------------------
+The DrainMind intelligence pipeline employs a multi-stage computer vision and 
+mathematical decision methodology:
+
+2.1 Image & Video Preprocessing
+  - Frame Ingestion: Accepts images (JPG, PNG, WEBP) up to 25MB and video 
+    streams (MP4, MOV, AVI) up to 100MB.
+  - Normalization: Enforces BGR array conversion, aspect-ratio preservation, 
+    and dimension verification.
+  - Video Stream Decoding: Employs time-sampled decimation (processing every Nth 
+    frame, default 5-10 frames) to maintain high real-time throughput while 
+    capturing spatial and temporal blockage progression.
+
+2.2 Defect Detection Pipeline (Deep Learning Ensemble)
+  - Primary Neural Detector: YOLOv8 (You Only Look Once v8) convolutional 
+    network running on PyTorch, trained for urban drainage objects (plastic 
+    bottles, synthetic waste, organic debris clusters, concrete fractures).
+  - Confidence Filtering: Dynamic sensitivity thresholding (0.05 to 0.90) 
+    allows operators to calibrate false-positive rejection versus subtle defect 
+    recall under murky or low-light conditions.
+  - Heuristic Fallback Engine: If external neural weights are unavailable, 
+    an integrated computer vision morphological engine executes contour 
+    geometry analysis and high-gradient edge classification, ensuring zero-
+    crash continuity.
+
+2.3 Semantic Segmentation & ROI Perspective Coverage
+  - Color-Space Segmentation: Analyzes frames in adaptive HSV (Hue, Saturation, 
+    Value) color matrices to segment low-saturation concrete from high-saturation 
+    debris, dark sediment silt, and reflective standing water.
+  - Structural Crack Detection: Utilizes bilateral filtering and adaptive Canny 
+    edge detection to isolate narrow fissure lines along concrete conduits.
+  - Central Channel ROI Isolation: Conduits exhibit severe perspective taper. 
+    DrainMind applies a trapezoidal/rectangular Region of Interest (ROI) over the 
+    central 60% channel flow bed where water moves, preventing sidewall graffiti 
+    or conduit lip shadows from falsely skewing blockage statistics.
+  - Hybrid Area Calculation: Calculates segmented pixel coverage inside the 
+    ROI and fuses it with bounding-box defect areas:
+      Debris Coverage (%) = max(Segmented_Debris_Pixels / ROI_Pixels, Box_Debris_Area / ROI_Area) * 100
+
+2.4 Multi-Factor Priority Risk Scoring Formula
+  The composite priority score is calculated through a normalized linear model:
+      Risk Score = (W_D * Debris%) + (W_W * Water%) + (W_T * Trend_Delta%)
+  Where:
+    - W_D = 0.50 (Debris / Silt Obstruction Weight)
+    - W_W = 0.30 (Waterlogging / Stagnation Weight)
+    - W_T = 0.20 (Longitudinal Deterioration Trend Weight)
+  Normalized to sum to 1.0. 
+  Score Categorization:
+    - 0.0 - 24.9 pts : Lower Inspection Priority (Normal Flow / Clear Channel)
+    - 25.0 - 49.9 pts: Monitor Condition (Minor leaves/specks; standard monitoring)
+    - 50.0 - 74.9 pts: Inspection Recommended (Partial obstruction; cleaning scheduled)
+    - 75.0 - 100.0 pts: High Inspection Priority / Critical (Urgent crew dispatch required)
+
+2.5 Longitudinal Change Intelligence & Delta Heatmapping
+  - Resolves spatial coordinates between Baseline Frame (T0) and Follow-up (T1).
+  - Difference Matrix: Computes absolute luminance difference matrix:
+      Diff(x,y) = |I_baseline(x,y) - I_followup(x,y)|
+  - Thermal Projection: Applies OpenCV JET colormap to difference gradients and 
+    blends 40% thermal matrix with 60% follow-up frame to visually illuminate 
+    sediment accretion (red/yellow shift) versus desilting clearance (cool blue).
+  - Automated Work Order Engine: Generates formal dispatch work order documents 
+    with unique tracking IDs, net telemetry shifts, and contractor action items.
+
+
+3. TOOLS AND TECHNOLOGY USED
+--------------------------------------------------------------------------------
+Component Category        Technology / Library        Purpose & Responsibility
+--------------------------------------------------------------------------------
+Programming Language      Python 3.10 - 3.13          Core application logic, ML, and backend
+Web Application Server    Streamlit                   Reactive multi-page web architecture, session 
+                                                      management, and live component rendering
+Frontend Styling & CSS    HTML5 + Custom Vanilla CSS  Executive Design System, dark navy sidebar,
+                          (assets/style.css)          Plus Jakarta Sans typography, flexbox KPI cards
+Computer Vision Core      OpenCV (cv2)                Image preprocessing, HSV segmentation, contour 
+                                                      detection, video decoding, and thermal heatmaps
+Image Processing          NumPy & Pillow (PIL)        Matrix linear algebra, mask convolutions, and 
+                                                      in-memory byte stream conversions
+Deep Learning Framework   PyTorch (torch/vision)      Hardware-accelerated tensor computation (CPU/CUDA)
+Object Detection Model    Ultralytics YOLOv8          Real-time convolutional object detection ensemble
+Data Persistence          SQLite 3 (WAL Mode)         Embedded transactional SQL database for audit logs
+Data Analysis             Pandas                      Tabular data formatting, sorting, and CSV exports
+Data Visualization        Plotly                      Interactive timeline charts and risk distributions
+Reporting Engine          ReportLab                   Programmatic municipal compliance PDF generation
+Automated Testing         Pytest & Pytest-Cov         43 automated unit & integration test suites
+Code Quality & Linting    Flake8 / Black / Pylint     Adherence to PEP 8 engineering standards
+--------------------------------------------------------------------------------
+
+
+4. FEASIBILITY ANALYSIS
+--------------------------------------------------------------------------------
+
+4.1 Technical Feasibility: HIGH (100% Achievable & Validated)
+  - Local Hardware Independence: DrainMind runs on standard consumer-grade x86_64 
+    or ARM64 CPU architectures without mandating expensive cloud GPUs. It is 
+    fully deployable on rugged municipal field laptops, edge units (NVIDIA Jetson), 
+    and command-center workstations.
+  - Fail-Safe Heuristics: The modular design includes automated fallbacks. If 
+    neural weights or camera hardware disconnect, classical morphological 
+    vision routines take over gracefully without system downtime.
+  - Zero Cloud Dependency: The entire application operates 100% offline in 
+    tunnels, remote stormwater basins, and subterranean vaults.
+
+4.2 Economic Feasibility: HIGH (High ROI / Minimal TCO)
+  - Zero Licensing Fees: Built entirely on open-source frameworks (Python, 
+    Streamlit, OpenCV, SQLite, PyTorch). Municipalities incur zero recurring 
+    SaaS subscription overhead.
+  - Significant Operational Savings: Replaces costly manual physical ditch 
+    crawling with automated video/photo inspections. Early detection of silt 
+    buildup avoids multi-million-dollar flood emergency expenditures and 
+    catastrophic road sinkhole repairs.
+  - Modest Hardware Investment: Leverages existing municipal infrastructure 
+    (inspection cameras, mobile phones, CCTV crawlers) without specialized 
+    proprietary sensors.
+
+4.3 Operational Feasibility: HIGH (Immediate Civil Adoption)
+  - Minimal Training Curve: Designed with a modern, consumer-grade UI featuring 
+    an integrated Interactive Onboarding Tour, contextual tooltips, and 
+    scenario presets for rapid onboarding of field operators.
+  - One-Click Output: Field workers and inspectors generate official municipal 
+    work order notices and executive PDF dossiers with a single click.
+  - Multi-Input Flexibility: Supports file uploads, direct webcam feeds, and 
+    continuous crawler video streams seamlessly.
+
+4.4 Legal & Compliance Feasibility: HIGH (Zero Liability / Auditable)
+  - Data Sovereignty & Privacy: Operates entirely local-first. Drainage footage 
+    and GPS infrastructure coordinates never leave the municipal server, 
+    preventing data leaks, privacy violations, or cloud compliance liabilities.
+  - Regulatory Civil Auditing: SQLite audit trails store immutable records of 
+    timestamps, raw footage, annotated artifacts, detector backend types, and 
+    inspector IDs, fully satisfying municipal oversight and legal accountability.
+  - Explainable AI: Unlike black-box neural networks, DrainMind's composite 
+    scoring uses transparent, published linear formulas, preventing algorithmic 
+    disputes during public procurement or maintenance contracting.
+
+
+5. SYSTEM ARCHITECTURE
+--------------------------------------------------------------------------------
+The DrainMind platform is built on a clean 6-tier modular architecture:
+
+ +----------------------------------------------------------------------------+
+ |                       TIER 1: INGESTION & INTERFACES                       |
+ |  [Mobile Photos]   [CCTV Crawlers]   [Drone Feeds]   [Live USB Webcam]    |
+ +----------------------------------------------------------------------------+
+                                       |
+                                       v
+ +----------------------------------------------------------------------------+
+ |                   TIER 2: PREPROCESSING & VALIDATION                       |
+ |  - Size & Mime-Type Validation   - BGR Matrix Normalization                |
+ |  - Video Frame Decimation Engine - In-Memory Byte Stream Decoders          |
+ +----------------------------------------------------------------------------+
+                                       |
+                                       v
+ +----------------------------------------------------------------------------+
+ |                TIER 3: COMPUTER VISION & INTELLIGENCE CORE                 |
+ |  [YOLOv8 Neural Ensemble]  [Adaptive HSV Segmenter]  [Central ROI Engine]  |
+ |  - Defect Bounding Boxes   - Silt & Mud Masks        - Perspective Filter  |
+ |  - Discrete Confidence     - Standing Water Masks    - Flow Coverage %     |
+ +----------------------------------------------------------------------------+
+                                       |
+                                       v
+ +----------------------------------------------------------------------------+
+ |              TIER 4: DECISION MATRIX & RISK SCORING ENGINE                 |
+ |  - Normalized Multi-Factor Linear Weighting: (Debris + Water + Trend)      |
+ |  - Severity Classifier: (Normal Flow / Monitor / Recommended / High Priority|
+ |  - Longitudinal Delta Engine & Visual Difference Heatmap Generator         |
+ +----------------------------------------------------------------------------+
+                                       |
+                                       v
+ +----------------------------------------------------------------------------+
+ |                     TIER 5: LOCAL DATA REPOSITORY                          |
+ |  - SQLite 3 (WAL Mode): locations, inspections, observations, detections   |
+ |  - Filesystem Storage: Original raw frames & annotated visual artifacts    |
+ +----------------------------------------------------------------------------+
+                                       |
+                                       v
+ +----------------------------------------------------------------------------+
+ |                    TIER 6: PRESENTATION & EXPORT SUITE                     |
+ |  - Streamlit Reactive Dashboard  - Plotly Telemetry Timeline Visualizer    |
+ |  - Machine-Readable CSV Logs     - Municipal Executive PDF Dossier Engine  |
+ +----------------------------------------------------------------------------+
+
+
+6. WORKFLOW & OPERATIONAL PIPELINE
+--------------------------------------------------------------------------------
+The end-to-end operational flow follows seven systematic phases:
+
+Phase 1: Ingestion & Asset Registration
+  1. The field inspector or engineer selects an existing monitored drain site 
+     or registers a new asset code (e.g., CULVERT-NORTH-04).
+  2. The operator selects the media input method (image upload, live webcam, 
+     or continuous CCTV video stream).
+
+Phase 2: Automated Computer Vision Inference
+  1. The frame is ingested into the vision pipeline.
+  2. Object detection identifies discrete obstructions (bottles, trash, cracks) 
+     and extracts bounding box coordinates and confidence levels.
+  3. Morphological color segmentation isolates pixel masks for sediment, silt, 
+     and standing water pools.
+
+Phase 3: Mathematical Telemetry & Flow Assessment
+  1. The central conduit ROI is projected onto the segmented masks.
+  2. The system computes exact Debris Coverage % and Standing Water Level %.
+  3. Historical records for the selected location are queried from SQLite to 
+     calculate the longitudinal trend delta (change since last inspection).
+
+Phase 4: Synthesis of Priority Score & Visual Annotation
+  1. The multi-factor scoring engine executes the linear weighting formula.
+  2. The inspection is categorized into an urgency tier (e.g., High Priority).
+  3. The visual compositing engine renders high-contrast bounding boxes, label 
+     pill tags, and a semi-transparent HUD telemetry banner directly onto the 
+     output frame.
+
+Phase 5: Transactional Database Commit & Artifact Storage
+  1. The operator clicks "Save Inspection to Database".
+  2. High-resolution raw and annotated frames are stored in `data/artifacts/`.
+  3. A new inspection record with complete observations, detections, model 
+     version, and timestamps is committed to the SQLite database.
+
+Phase 6: Longitudinal Comparison & Work Order Dispatch
+  1. In the Location Comparison module, the operator reviews baseline versus 
+     follow-up frames side-by-side.
+  2. The computer vision delta heatmap isolates localized sediment growth.
+  3. The system generates an official municipal maintenance work order notice 
+     specifying exact required contractor actions.
+
+Phase 7: Compliance Reporting & Dossier Export
+  1. The engineering supervisor accesses the Reports module.
+  2. Filters by location, date range, and severity.
+  3. Generates machine-readable CSV audit tables or downloads a printable, 
+     formatted PDF Executive Dossier complete with methodology notes and 
+     civil compliance telemetry.
+
+================================================================================
+END OF SPECIFICATION — DRAINMIND MUNICIPAL INTELLIGENCE SYSTEM
+================================================================================

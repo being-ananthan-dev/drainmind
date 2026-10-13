@@ -1,0 +1,385 @@
+/* ==============================================================================
+   DrainMind Design System — Professional UI & Responsive Styles
+   ============================================================================== */
+
+@import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap');
+
+:root {
+  /* Surface colors */
+  --bg-app:        #F8FAFC;  /* Slate-50: Crisp modern light background */
+  --bg-surface:    #FFFFFF;  /* Pure white cards */
+  --bg-surface-alt:#F1F5F9;  /* Slate-100: Secondary card / table header */
+  --bg-sidebar:    #0F172A;  /* Slate-900: Deep executive dark navy */
+
+  /* Text colors */
+  --text-main:     #0F172A;  /* Slate-900: High-contrast legible text */
+  --text-muted:    #475569;  /* Slate-600: Secondary / description text */
+  --text-subtle:   #94A3B8;  /* Slate-400: Placeholder / subtle timestamps */
+
+  /* Brand Accents */
+  --brand-primary: #0D5C3A;  /* Deep Emerald Forest */
+  --brand-hover:   #09432A;
+  --brand-light:   #E8F5EE;  /* Light emerald tint */
+  --brand-blue:    #0284C7;  /* Sky-600 */
+  --brand-blue-bg: #E0F2FE;
+
+  /* Status Colors */
+  --status-low:     #16A34A; /* Green-600 */
+  --status-low-bg:  #DCFCE7;
+  --status-mon:     #D97706; /* Amber-600 */
+  --status-mon-bg:  #FEF3C7;
+  --status-high:    #EA580C; /* Orange-600 */
+  --status-high-bg: #FFEDD5;
+  --status-crit:    #DC2626; /* Red-600 */
+  --status-crit-bg: #FEE2E2;
+
+  /* Borders & Shadows */
+  --border-light:   #E2E8F0; /* Slate-200 */
+  --border-medium:  #CBD5E1; /* Slate-300 */
+  --shadow-card:    0 1px 3px 0 rgba(15, 23, 42, 0.05), 0 1px 2px -1px rgba(15, 23, 42, 0.05);
+  --shadow-hover:   0 4px 6px -1px rgba(15, 23, 42, 0.08), 0 2px 4px -2px rgba(15, 23, 42, 0.06);
+
+  /* Fonts */
+  --font-sans: 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif;
+  --font-mono: 'JetBrains Mono', ui-monospace, monospace;
+}
+
+/* Base Body Resets */
+html, body, .stApp {
+  font-family: var(--font-sans) !important;
+  background-color: var(--bg-app) !important;
+  color: var(--text-main) !important;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* Container constraints & padding */
+.block-container {
+  padding-top: 1.8rem !important;
+  padding-bottom: 2.5rem !important;
+  max-width: 1320px !important;
+}
+
+/* Sidebar Styling — Executive Dark Navy */
+section[data-testid="stSidebar"] {
+  background-color: var(--bg-sidebar) !important;
+  border-right: 1px solid rgba(255, 255, 255, 0.08) !important;
+}
+
+section[data-testid="stSidebar"] h1,
+section[data-testid="stSidebar"] h2,
+section[data-testid="stSidebar"] h3 {
+  color: #F8FAFC !important;
+  font-weight: 700 !important;
+  letter-spacing: -0.2px !important;
+}
+
+section[data-testid="stSidebar"] p,
+section[data-testid="stSidebar"] span,
+section[data-testid="stSidebar"] label {
+  color: #CBD5E1 !important;
+  font-size: 0.85rem !important;
+}
+
+section[data-testid="stSidebar"] .stButton > button {
+  background-color: rgba(255, 255, 255, 0.06) !important;
+  color: #F1F5F9 !important;
+  border: 1px solid rgba(255, 255, 255, 0.12) !important;
+  border-radius: 6px !important;
+  font-size: 0.84rem !important;
+  font-weight: 600 !important;
+  padding: 0.45rem 0.75rem !important;
+  transition: all 0.15s ease-in-out !important;
+}
+
+section[data-testid="stSidebar"] .stButton > button:hover {
+  background-color: rgba(255, 255, 255, 0.15) !important;
+  border-color: rgba(255, 255, 255, 0.25) !important;
+  color: #FFFFFF !important;
+}
+
+.sidebar-divider {
+  height: 1px;
+  background: rgba(255, 255, 255, 0.1);
+  margin: 12px 0 16px 0;
+}
+
+/* Page Headers */
+.page-title {
+  font-size: 1.65rem !important;
+  font-weight: 800 !important;
+  color: var(--text-main) !important;
+  letter-spacing: -0.5px !important;
+  line-height: 1.2 !important;
+  margin: 0 0 4px 0 !important;
+}
+
+.page-subtitle {
+  font-size: 0.92rem !important;
+  color: var(--text-muted) !important;
+  margin: 0 0 1.2rem 0 !important;
+  line-height: 1.4 !important;
+}
+
+.section-divider {
+  height: 1px;
+  background: var(--border-light);
+  margin: 1.4rem 0;
+}
+
+/* Section Headings */
+.section-heading {
+  font-size: 1.05rem !important;
+  font-weight: 700 !important;
+  color: var(--text-main) !important;
+  letter-spacing: -0.2px !important;
+  margin-bottom: 0.75rem !important;
+}
+
+/* Uniform KPI Card Component (Flexbox with identical height) */
+.kpi-card {
+  background: var(--bg-surface);
+  border: 1px solid var(--border-light);
+  border-radius: 8px;
+  padding: 16px 18px;
+  box-shadow: var(--shadow-card);
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  min-height: 115px;
+  box-sizing: border-box;
+  transition: transform 0.1s ease, box-shadow 0.1s ease;
+}
+
+.kpi-card:hover {
+  box-shadow: var(--shadow-hover);
+}
+
+.kpi-label {
+  font-size: 0.72rem !important;
+  font-weight: 700 !important;
+  text-transform: uppercase !important;
+  letter-spacing: 0.06em !important;
+  color: var(--text-muted) !important;
+  margin-bottom: 4px !important;
+}
+
+.kpi-value {
+  font-size: 2.1rem !important;
+  font-weight: 800 !important;
+  line-height: 1.1 !important;
+  letter-spacing: -0.5px !important;
+  color: var(--text-main);
+  font-variant-numeric: tabular-nums;
+}
+
+.kpi-subtext {
+  font-size: 0.78rem !important;
+  color: var(--text-muted) !important;
+  margin-top: 6px !important;
+  font-weight: 500 !important;
+}
+
+/* Action Banner Card */
+.action-banner {
+  background: var(--bg-surface);
+  border: 1px solid var(--border-light);
+  border-radius: 8px;
+  padding: 14px 18px;
+  box-shadow: var(--shadow-card);
+  margin-bottom: 1rem;
+}
+
+/* Status Badges */
+.status-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 3px 9px;
+  border-radius: 12px;
+  font-size: 0.75rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.status-pill.low {
+  background-color: var(--status-low-bg);
+  color: var(--status-low);
+  border: 1px solid rgba(22, 163, 74, 0.25);
+}
+
+.status-pill.monitor {
+  background-color: var(--status-mon-bg);
+  color: var(--status-mon);
+  border: 1px solid rgba(217, 119, 6, 0.25);
+}
+
+.status-pill.recommended {
+  background-color: var(--status-high-bg);
+  color: var(--status-high);
+  border: 1px solid rgba(234, 88, 12, 0.25);
+}
+
+.status-pill.critical {
+  background-color: var(--status-crit-bg);
+  color: var(--status-crit);
+  border: 1px solid rgba(220, 38, 38, 0.25);
+}
+
+/* Info & Callout Boxes */
+.callout-box {
+  background: var(--bg-surface);
+  border: 1px solid var(--border-light);
+  border-left: 4px solid var(--brand-primary);
+  border-radius: 6px;
+  padding: 12px 16px;
+  font-size: 0.88rem;
+  color: var(--text-main);
+  margin: 10px 0;
+  box-shadow: var(--shadow-card);
+}
+
+.callout-box.warn {
+  border-left-color: var(--status-mon);
+  background: #FFFDF7;
+}
+
+.callout-box.crit {
+  border-left-color: var(--status-crit);
+  background: #FEF7F7;
+}
+
+/* Primary Button Overrides */
+.stButton > button[kind="primary"],
+.stButton > button[type="primary"] {
+  background-color: var(--brand-primary) !important;
+  color: #FFFFFF !important;
+  border: 1px solid var(--brand-primary) !important;
+  border-radius: 6px !important;
+  font-weight: 600 !important;
+  font-size: 0.84rem !important;
+  padding: 0.42rem 0.75rem !important;
+  box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05) !important;
+  transition: all 0.15s ease !important;
+  white-space: nowrap !important;
+}
+
+.stButton > button[kind="primary"]:hover,
+.stButton > button[type="primary"]:hover {
+  background-color: var(--brand-hover) !important;
+  border-color: var(--brand-hover) !important;
+}
+
+/* Secondary Button Overrides */
+.stButton > button[kind="secondary"],
+.stButton > button:not([kind]):not([type="primary"]) {
+  background-color: var(--bg-surface) !important;
+  color: var(--text-main) !important;
+  border: 1px solid var(--border-medium) !important;
+  border-radius: 6px !important;
+  font-weight: 600 !important;
+  font-size: 0.84rem !important;
+  padding: 0.42rem 0.75rem !important;
+  box-shadow: var(--shadow-card) !important;
+  transition: all 0.15s ease !important;
+  white-space: nowrap !important;
+}
+
+.stButton > button[kind="secondary"]:hover,
+.stButton > button:not([kind]):not([type="primary"]):hover {
+  background-color: var(--bg-surface-alt) !important;
+  border-color: var(--text-muted) !important;
+}
+
+/* Streamlit Native Metric Overrides */
+[data-testid="stMetric"] {
+  background: var(--bg-surface);
+  border: 1px solid var(--border-light);
+  border-radius: 8px;
+  padding: 14px 16px;
+  box-shadow: var(--shadow-card);
+}
+
+[data-testid="stMetricValue"] {
+  font-size: 1.8rem !important;
+  font-weight: 800 !important;
+  color: var(--text-main) !important;
+  letter-spacing: -0.4px !important;
+  font-variant-numeric: tabular-nums !important;
+}
+
+[data-testid="stMetricLabel"] {
+  font-size: 0.72rem !important;
+  font-weight: 700 !important;
+  text-transform: uppercase !important;
+  letter-spacing: 0.05em !important;
+  color: var(--text-muted) !important;
+}
+
+/* Streamlit Tabs Overrides */
+.stTabs [data-baseweb="tab-list"] {
+  gap: 8px !important;
+  border-bottom: 2px solid var(--border-light) !important;
+  padding-bottom: 0px !important;
+}
+
+.stTabs [data-baseweb="tab"] {
+  font-size: 0.88rem !important;
+  font-weight: 600 !important;
+  padding: 8px 16px !important;
+  border-radius: 6px 6px 0 0 !important;
+  color: var(--text-muted) !important;
+}
+
+.stTabs [aria-selected="true"] {
+  color: var(--brand-primary) !important;
+  border-bottom: 3px solid var(--brand-primary) !important;
+  background-color: transparent !important;
+}
+
+/* Dataframe & Tables */
+.stDataFrame {
+  border: 1px solid var(--border-light) !important;
+  border-radius: 8px !important;
+  box-shadow: var(--shadow-card) !important;
+  overflow: hidden !important;
+}
+
+/* Input Fields & Select Boxes */
+.stSelectbox label, .stTextInput label, .stNumberInput label,
+.stTextArea label, .stSlider label, .stDateInput label {
+  font-size: 0.82rem !important;
+  font-weight: 700 !important;
+  color: var(--text-main) !important;
+  margin-bottom: 3px !important;
+}
+
+/* Empty State Component */
+.empty-state {
+  background: var(--bg-surface);
+  border: 2px dashed var(--border-medium);
+  border-radius: 8px;
+  padding: 2.2rem 1.5rem;
+  text-align: center;
+  margin: 1.2rem 0;
+}
+
+.empty-icon {
+  font-size: 2.4rem;
+  margin-bottom: 8px;
+}
+
+.empty-title {
+  font-size: 1.1rem;
+  font-weight: 700;
+  color: var(--text-main);
+  margin-bottom: 4px;
+}
+
+.empty-body {
+  font-size: 0.88rem;
+  color: var(--text-muted);
+  max-width: 480px;
+  margin: 0 auto;
+  line-height: 1.4;
+}

@@ -1,0 +1,65 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+*.egg
+*.egg-info/
+dist/
+build/
+.eggs/
+
+# Virtual environments
+venv/
+env/
+.venv/
+.env/
+
+# IDE
+.vscode/
+.idea/
+*.suo
+*.user
+
+# DrainMind runtime data
+data/drainmind.db
+data/drainmind.db-shm
+data/drainmind.db-wal
+data/*.log
+data/raw/
+data/processed/
+data/.onboarding_seen
+!data/.gitkeep
+
+# Model weights (download separately)
+models/*.pt
+models/*.onnx
+models/*.torchscript
+!models/.gitkeep
+
+# Outputs (generated) — keep directory structure
+outputs/annotated/*
+outputs/reports/*
+outputs/raw/
+!outputs/annotated/.gitkeep
+!outputs/reports/.gitkeep
+
+# Large pre-downloaded model weights
+yolov8n.pt
+
+# User-specific config override
+configs/user_settings.yaml
+
+# Keep Streamlit cloud config
+!.streamlit/config.toml
+
+# Temp files
+*.tmp
+*.temp
+tmp_*.mp4
+tmp_*.avi
+
+# OS
+.DS_Store
+Thumbs.db
+desktop.ini
